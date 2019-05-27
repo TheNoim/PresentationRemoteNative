@@ -1,18 +1,6 @@
 import React, { Component } from 'react';
 import ConnectionStore from '../stores/Connection';
-import {
-	Title,
-	Row,
-	View,
-	Icon,
-	Image,
-	ListView,
-	Subtitle,
-	Text,
-	Button,
-	Touchable,
-	SimpleHtml
-} from '@shoutem/ui';
+import { Title, Row, View, Text, Button, SimpleHtml } from '@shoutem/ui';
 import { observer } from 'mobx-react/custom';
 import { get } from 'lodash';
 import { computed } from 'mobx';
@@ -29,7 +17,7 @@ export default class Selected extends Component {
 	}
 
 	@computed get currentPage() {
-		if (!this.presentation) return '0';
+		if (!this.presentation || !this.presentation.indices) return '0';
 		const hor = this.presentation.indices.h + 1;
 		const vert = this.presentation.indices.v;
 		let page = `${hor}`;

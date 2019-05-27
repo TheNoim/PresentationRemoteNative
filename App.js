@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
 import { Screen, NavigationBar, Title, Icon, Button } from '@shoutem/ui';
 import ConnectionStore from './stores/Connection';
 import { observer } from 'mobx-react/custom';
 import PresentationList from './components/PresentationList';
 import Selected from './components/Selected';
+import { StatusBar } from 'react-native';
+import StatusBarPaddingIOS from 'react-native-ios-status-bar-padding';
+import KeepAwake from 'react-native-keep-awake';
 
 @observer
 export default class App extends Component {
@@ -15,6 +17,7 @@ export default class App extends Component {
 	render() {
 		return (
 			<Screen>
+				<StatusBarPaddingIOS />
 				<NavigationBar
 					centerComponent={<Title>{ConnectionStore.title}</Title>}
 					styleName="inline"
@@ -33,9 +36,9 @@ export default class App extends Component {
 				{ConnectionStore.connected && ConnectionStore.initialFetch ? (
 					ConnectionStore.selected ? (
 						<Selected />
-					) : ConnectionStore.renderControl ? (
+					) : (
 						<PresentationList />
-					) : null
+					)
 				) : (
 					<Title>
 						{ConnectionStore.connected ? (
@@ -45,11 +48,8 @@ export default class App extends Component {
 						)}
 					</Title>
 				)}
+				<KeepAwake />
 			</Screen>
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	container: {}
-});

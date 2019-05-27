@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import ConnectionStore from '../stores/Connection';
 import {
-	Title,
 	Row,
 	View,
-	Icon,
 	Image,
-	ListView,
 	Subtitle,
 	Text,
 	Button,
@@ -24,6 +21,7 @@ export default class PasswordEnterScreen extends Component {
 	constructor(props) {
 		super(props);
 		this.presentation = props.presentation;
+		ConnectionStore.resetError();
 	}
 
 	render() {
@@ -44,27 +42,36 @@ export default class PasswordEnterScreen extends Component {
 					) : null}
 					<View styleName="vertical">
 						<Subtitle>{title}</Subtitle>
-						<Text numberOfLines={1}>
+						<Text numberOfLines={2}>
 							{this.clientInfo(presentation)}
 						</Text>
 					</View>
 				</Row>
+				{ConnectionStore.lastError ? (
+					<Row>
+						<Text>Error: {ConnectionStore.lastError}</Text>
+					</Row>
+				) : null}
 				<TextInput
 					onChangeText={ConnectionStore.setPassword.bind(
 						ConnectionStore
 					)}
 					placeholder={'Password'}
-					secureTextEntry
+					onSubmitEditing={() => ConnectionStore.subscribeTo(id)}
+					returnKeyType="done"
+					autoFocus
+					autoCorrect={false}
+					autoCapitalize={'none'}
 				/>
 				<Row>
 					<View>
-						<Button onPress={() => ConnectionStore.subscribeTo(id)}>
-							<Text>Connect</Text>
+						<Button onPress={this.dismiss}>
+							<Text>Dismiss</Text>
 						</Button>
 					</View>
 					<View>
-						<Button onPress={this.dismiss}>
-							<Text>Dismiss</Text>
+						<Button onPress={() => ConnectionStore.subscribeTo(id)}>
+							<Text>Connect</Text>
 						</Button>
 					</View>
 				</Row>
@@ -90,11 +97,30 @@ export default class PasswordEnterScreen extends Component {
 		let string = '';
 		const ip = get(pres, 'info.client.ip.ip', false);
 		const os = get(pres, 'info.client.os', false);
+		const host = get(pres, 'info.meta.host', false);
+		const env = get(pres, 'info.meta.env', 'unknown');
 		if (ip) {
 			string = this.addAndExtend(string, ip);
 		}
 		if (os) {
 			string = this.addAndExtend(string, os);
+		}
+		if (host) {
+			string = this.addAndExtend(string, host);
+		}
+		if (env) {
+			switch (env) {
+				case 'production':
+					string = this.addAndExtend(string, 'Pro');
+					break;
+				case 'development':
+					string = this.addAndExtend(string, 'Dev');
+					break;
+				default:
+				case 'unknown':
+					string = this.addAndExtend(string, 'Unk');
+					break;
+			}
 		}
 		if (string === '') return false;
 		return string;

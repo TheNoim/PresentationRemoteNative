@@ -62,7 +62,7 @@ export default class PresentationList extends Component {
 					) : null}
 					<View styleName="vertical">
 						<Subtitle>{title}</Subtitle>
-						<Text numberOfLines={1}>
+						<Text numberOfLines={2}>
 							{this.clientInfo(presentation)}
 						</Text>
 					</View>
@@ -110,11 +110,30 @@ export default class PresentationList extends Component {
 		let string = '';
 		const ip = get(pres, 'info.client.ip.ip', false);
 		const os = get(pres, 'info.client.os', false);
+		const host = get(pres, 'info.meta.host', false);
+		const env = get(pres, 'info.meta.env', 'unknown');
 		if (ip) {
 			string = this.addAndExtend(string, ip);
 		}
 		if (os) {
 			string = this.addAndExtend(string, os);
+		}
+		if (host) {
+			string = this.addAndExtend(string, host);
+		}
+		if (env) {
+			switch (env) {
+				case 'production':
+					string = this.addAndExtend(string, 'Pro');
+					break;
+				case 'development':
+					string = this.addAndExtend(string, 'Dev');
+					break;
+				default:
+				case 'unknown':
+					string = this.addAndExtend(string, 'Unk');
+					break;
+			}
 		}
 		if (string === '') return false;
 		return string;

@@ -5290,6 +5290,11 @@ react-native-ios-status-bar-padding@^1.2.0:
   dependencies:
     react-native-status-bar-size "^0.3.2"
 
+react-native-keep-awake@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-keep-awake/-/react-native-keep-awake-4.0.0.tgz#d89fdc3fb60b3cffa979ef37dc5816196df998a2"
+  integrity sha512-0Fotox+eLXQooeibVs3P60yASYUWjtRw9MZNmbuHt5UZQrgUrAKsE4jm7gTr4tPU1m1RkwGzcgUFpcOkh/ec7g==
+
 react-native-lightbox@shoutem/react-native-lightbox#v0.7.2:
   version "0.7.2"
   resolved "https://codeload.github.com/shoutem/react-native-lightbox/tar.gz/91f3f58759e9901d9c006b01ce32d074606eda0e"

@@ -8,21 +8,7 @@ class ConnectionStore {
 
 	@observable _presentations = [];
 
-	@observable renderControl = true;
-
-	@computed get presentations() {
-		return this._presentations;
-	}
-
-	set presentations(v) {
-		this._presentations = v;
-		this.renderControl = false;
-		requestAnimationFrame(() => {
-			runInAction(() => {
-				this.renderControl = true;
-			});
-		});
-	}
+	@observable presentations = [];
 
 	@observable presentation = {};
 
@@ -31,6 +17,8 @@ class ConnectionStore {
 	@observable initialFetch = false;
 
 	@observable pw = null;
+
+	@observable lastError = false;
 
 	@computed get title() {
 		return get(this.presentation, 'title', 'Willkommen');
@@ -49,8 +37,10 @@ class ConnectionStore {
 		this.client.on('connect', () => {
 			runInAction(() => {
 				this.connected = true;
+				requestAnimationFrame(() => {
+					this.initClient();
+				});
 			});
-			this.initClient();
 		});
 		this.client.on('disconnect', () => {
 			runInAction(() => {
@@ -95,6 +85,7 @@ class ConnectionStore {
 	}
 
 	subscribeTo(id) {
+		this.resetError();
 		this.client.emit(
 			'subscribeTo',
 			{
@@ -102,18 +93,25 @@ class ConnectionStore {
 				id
 			},
 			state => {
-				if (state) {
-					this.setSelectedPresentation(state, id);
+				if (typeof state === 'string' && state === 'Invalid password') {
+					this.unselect(state);
 				} else {
-					this.unselect();
+					if (state) {
+						this.setSelectedPresentation(state, id);
+					} else {
+						this.unselect();
+					}
 				}
 			}
 		);
 	}
 
-	@action unselect() {
+	unselect(error) {
 		this.selected = false;
 		this.presentation = {};
+		if (error) {
+			this.lastError = error;
+		}
 	}
 
 	@action setSelectedPresentation(state, id) {
@@ -133,12 +131,19 @@ class ConnectionStore {
 	}
 
 	@action destroy() {
+		this.resetError();
 		this.presentation = {};
 		this.selected = null;
 		this.initialFetch = false;
 		this.pw = null;
 		this.client.disconnect();
-		this.client.open();
+		requestAnimationFrame(() => {
+			this.client.open();
+		});
+	}
+
+	@action resetError() {
+		this.lastError = false;
 	}
 }
 
