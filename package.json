@@ -9,7 +9,7 @@
 	},
 	"dependencies": {
 		"@shoutem/ui": "^0.23.20",
-		"lodash": "^4.17.11",
+		"lodash": "^4.17.19",
 		"mobx": "^5.9.4",
 		"mobx-react": "^5.4.4",
 		"react": "16.8.3",
